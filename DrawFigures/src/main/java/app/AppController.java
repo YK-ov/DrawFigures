@@ -57,7 +57,7 @@ public class AppController {
     private void initialize() {
     lineButton.setSelected(true);
 
-    if (lineButton.isSelected()) {  // because line at first is always selected (always true)
+    if (lineButton.isSelected()) {  // because lineButton is always selected at the start of the program (always true)
                 linePressedHandler = new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
