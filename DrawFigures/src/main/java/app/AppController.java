@@ -52,10 +52,13 @@ public class AppController {
     private EventHandler<MouseEvent> rectangleButtonReleasedHandler;
     private EventHandler<MouseEvent> ellipseButtonPressedHandler;
     private EventHandler<MouseEvent> ellipseButtonReleasedHandler;
+    private EventHandler<MouseEvent> newButtonPressedHandler;
 
     private Point2D rectangleStart;
     private Point2D lineStart;
     private Point2D ellipseStart;
+
+    private List<Shape> figures = new ArrayList<>();
 
 
 @FXML
@@ -89,6 +92,7 @@ public class AppController {
 
                 Line line = new Line(strokeColorPicker.getValue(), lineStart, lastPoint);
                 line.draw(canvas.getGraphicsContext2D());
+
             }
         };
 
@@ -101,10 +105,11 @@ public class AppController {
 
         //GraphicsContext gc = canvas.getGraphicsContext2D(); // from the fx:id
 
-        handleButtons();
+        handleDrawButtons();
+        handleMenuButtons();
 }
 
-            public void handleButtons() {
+            public void handleDrawButtons() {
                 lineButton.setOnAction(new EventHandler<ActionEvent>() {  // could be done with lambda expression (or statement?)
                     @Override
                     public void handle(ActionEvent actionEvent) {
@@ -135,6 +140,7 @@ public class AppController {
 
                                 Line line = new Line(strokeColorPicker.getValue(), lineStart, lastPoint);
                                 line.draw(canvas.getGraphicsContext2D());
+                                figures.add(line);
                             }
                         };
                         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, linePressedHandler);
@@ -164,6 +170,7 @@ public class AppController {
                                 Point2D lastPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
                                 Ellipse ellipse = new Ellipse(strokeColorPicker.getValue(), ellipseStart, lastPoint, fillColorPicker.getValue());
                                 ellipse.draw(canvas.getGraphicsContext2D());
+                                figures.add(ellipse);
                             }
                         };
                         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, ellipseButtonPressedHandler);
@@ -192,6 +199,7 @@ public class AppController {
                                 Point2D secondClick = new Point2D(mouseEvent.getX(), mouseEvent.getY());
                                 Rectangle rectangle = new Rectangle(strokeColorPicker.getValue(), rectangleStart, secondClick, fillColorPicker.getValue());
                                 rectangle.draw(canvas.getGraphicsContext2D());
+                                figures.add(rectangle);
                             }
                         };
                         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, rectangleButtonPressedHandler);
@@ -238,5 +246,106 @@ public class AppController {
 
             }
 
+            public void handleMenuButtons() {
+                newButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        clearHandlers();  // just to be sure even though not needed (not sure)
+
+                        canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+                        if (lineButton.isSelected()) {
+                            clearHandlers();  // to check
+                            System.out.println("Line selected still");
+                            linePressedHandler = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Point2D firstPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                    lineStart = firstPoint;
+                                }
+                            };
+
+                            lineDraggedHandler = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    //canvas.getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());  // - for free drawing, not straight line
+                                    //canvas.getGraphicsContext2D().closePath();
+                                    //canvas.getGraphicsContext2D().lineTo(mouseEvent.getX(), mouseEvent.getY());
+                                    //canvas.getGraphicsContext2D().stroke();
+                                }
+                            };
+
+
+                            lineReleasedHandler = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Point2D lastPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+
+                                    Line line = new Line(strokeColorPicker.getValue(), lineStart, lastPoint);
+                                    line.draw(canvas.getGraphicsContext2D());
+
+                                }
+                            };
+
+                            canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, linePressedHandler);
+                            canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, lineDraggedHandler);
+                            canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, lineReleasedHandler);
+                        }
+
+                        if (ellipseButton.isSelected()) {
+                            clearHandlers();
+                            System.out.println("Ellipse selected still");
+
+                            ellipseButtonPressedHandler = new EventHandler<MouseEvent>() {
+
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Point2D firstPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                    ellipseStart = firstPoint;
+                                }
+                            };
+                            ellipseButtonReleasedHandler = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Point2D lastPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                    Ellipse ellipse = new Ellipse(strokeColorPicker.getValue(), ellipseStart, lastPoint, fillColorPicker.getValue());
+                                    ellipse.draw(canvas.getGraphicsContext2D());
+                                    figures.add(ellipse);
+                                }
+                            };
+                            canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, ellipseButtonPressedHandler);
+                            canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, ellipseButtonReleasedHandler);
+                        }
+
+                        if (rectangleButton.isSelected()) {
+                            clearHandlers();
+                            System.out.println("Rectangle selected still");
+
+                            rectangleButtonPressedHandler = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Point2D firstClick = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                    rectangleStart = firstClick;
+                                }
+                            };
+
+                            rectangleButtonReleasedHandler = new EventHandler<MouseEvent>() {
+                                @Override
+                                public void handle(MouseEvent mouseEvent) {
+                                    Point2D secondClick = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                    Rectangle rectangle = new Rectangle(strokeColorPicker.getValue(), rectangleStart, secondClick, fillColorPicker.getValue());
+                                    rectangle.draw(canvas.getGraphicsContext2D());
+                                    figures.add(rectangle);
+                                }
+                            };
+                            canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, rectangleButtonPressedHandler);
+                            canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, rectangleButtonReleasedHandler);
+                        }
+
+                    }
+                    });
+
+            }
 }
+
+
 
