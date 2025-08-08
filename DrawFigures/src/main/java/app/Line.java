@@ -1,6 +1,7 @@
 package app;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 
 public class Line extends Shape{
 
@@ -13,11 +14,8 @@ public class Line extends Shape{
     }
 
     @Override
-    public void draw() {
+    public void draw(GraphicsContext  gc) {
 
-
-
-        super.draw();
     }
 
     public Point2D getPointOne() {

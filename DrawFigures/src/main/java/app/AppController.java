@@ -5,6 +5,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +20,7 @@ import javafx.scene.paint.Paint;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AppController {
 @FXML  // copy from view.fxml in the controller where the "fx:id" references are
@@ -51,7 +53,10 @@ public class AppController {
     private EventHandler<MouseEvent> linePressedHandler;
     private EventHandler<MouseEvent> lineDraggedHandler;
     private EventHandler<MouseEvent> lineReleasedHandler;
-
+    private EventHandler<MouseEvent> rectangleButtonPressedHandler;
+    private EventHandler<MouseEvent> rectangleButtonDraggedHandler;
+    private EventHandler<MouseEvent> rectangleButtonReleasedHandler;
+    private Point2D rectangleStart;
 
 @FXML
     private void initialize() {
@@ -207,10 +212,40 @@ public class AppController {
                     lineReleasedHandler = null;
                 }
 
+                rectangleButtonPressedHandler = new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        Point2D firstClick = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                        rectangleStart = firstClick;
+                    }
+                };
+
+                rectangleButtonDraggedHandler = new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+
+                    }
+                };
+
+                rectangleButtonReleasedHandler = new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        Point2D secondClick = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                        Rectangle rectangle = new Rectangle(strokeColorPicker.getValue(), rectangleStart, secondClick, fillColorPicker.getValue());
+                        rectangle.draw(canvas.getGraphicsContext2D());
+                    }
+                };
+                canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, rectangleButtonPressedHandler);
+                canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, rectangleButtonReleasedHandler);
+
                 System.out.println("Rectangle selected");
             }
         });
 
+
+    }
+
+    public void clearHandlers(){
 
     }
 

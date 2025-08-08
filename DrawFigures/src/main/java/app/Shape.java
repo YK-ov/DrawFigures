@@ -1,15 +1,24 @@
 package app;
 
 import javafx.geometry.Point2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public abstract class Shape {
-    private Color strokeColor;
-    private Point2D topLeft;
-    private Point2D rightBottom;
+    protected Color strokeColor;
+    protected Point2D topLeft;
+    protected Point2D rightBottom;
 
-    public void draw() {
+    public Shape() {  // parameterless constructor for Line class
 
     }
+
+    public Shape(Color strokeColor, Point2D topLeft, Point2D rightBottom) {
+        this.strokeColor = strokeColor;
+        this.topLeft = topLeft;
+        this.rightBottom = rightBottom;
+    }
+
+    public abstract void draw(GraphicsContext gc);
 
 }
