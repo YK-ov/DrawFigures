@@ -2,22 +2,21 @@ package app;
 
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 public class Line extends Shape{
 
-    private Point2D pointOne;
-    private Point2D pointTwo;
-
-    public Line(Point2D pointOne, Point2D pointTwo) {
-        this.pointOne = pointOne;
-        this.pointTwo = pointTwo;
+    public Line(Color strokeColor, Point2D topLeft, Point2D rightBottom) {
+        super(strokeColor, topLeft, rightBottom);
     }
+
 
     @Override
     public void draw(GraphicsContext  gc) {
-
+        gc.setStroke(strokeColor);
+        gc.strokeLine(topLeft.getX(), topLeft.getY(), rightBottom.getX(), rightBottom.getY());
     }
-
+/*
     public Point2D getPointOne() {
         return pointOne;
     }
@@ -33,4 +32,6 @@ public class Line extends Shape{
     public void setPointTwo(Point2D pointTwo) {
         this.pointTwo = pointTwo;
     }
+*/
 }
+

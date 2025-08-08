@@ -9,9 +9,6 @@ public abstract class Shape {
     protected Point2D topLeft;
     protected Point2D rightBottom;
 
-    public Shape() {  // parameterless constructor for Line class
-
-    }
 
     public Shape(Color strokeColor, Point2D topLeft, Point2D rightBottom) {
         this.strokeColor = strokeColor;
