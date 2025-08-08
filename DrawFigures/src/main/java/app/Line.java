@@ -16,22 +16,6 @@ public class Line extends Shape{
         gc.setStroke(strokeColor);
         gc.strokeLine(topLeft.getX(), topLeft.getY(), rightBottom.getX(), rightBottom.getY());
     }
-/*
-    public Point2D getPointOne() {
-        return pointOne;
-    }
 
-    public Point2D getPointTwo() {
-        return pointTwo;
-    }
-
-    public void setPointOne(Point2D pointOne) {
-        this.pointOne = pointOne;
-    }
-
-    public void setPointTwo(Point2D pointTwo) {
-        this.pointTwo = pointTwo;
-    }
-*/
 }
 

@@ -45,19 +45,18 @@ public class AppController {
 @FXML
     private ColorPicker fillColorPicker;
 
-    private ArrayList<Point2D> points = new ArrayList<>();
-    private Line currentLine;
-    private Pane pane;
     private EventHandler<MouseEvent> linePressedHandler;
     private EventHandler<MouseEvent> lineDraggedHandler;  // only for free drawing (which is not used in main project at all)
     private EventHandler<MouseEvent> lineReleasedHandler;
     private EventHandler<MouseEvent> rectangleButtonPressedHandler;
     private EventHandler<MouseEvent> rectangleButtonReleasedHandler;
-
-
+    private EventHandler<MouseEvent> ellipseButtonPressedHandler;
+    private EventHandler<MouseEvent> ellipseButtonReleasedHandler;
 
     private Point2D rectangleStart;
     private Point2D lineStart;
+    private Point2D ellipseStart;
+
 
 @FXML
     private void initialize() {
@@ -119,7 +118,6 @@ public class AppController {
                             }
                         };
 
-
                         lineDraggedHandler = new EventHandler<MouseEvent>() {
                             @Override
                             public void handle(MouseEvent mouseEvent) {
@@ -129,7 +127,6 @@ public class AppController {
                                 //canvas.getGraphicsContext2D().stroke();
                             }
                         };
-
 
                         lineReleasedHandler = new EventHandler<MouseEvent>() {
                             @Override
@@ -153,10 +150,29 @@ public class AppController {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         clearHandlers();
+                        ellipseButtonPressedHandler = new EventHandler<MouseEvent>() {
+
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                Point2D firstPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                ellipseStart = firstPoint;
+                            }
+                        };
+                        ellipseButtonReleasedHandler = new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent mouseEvent) {
+                                Point2D lastPoint = new Point2D(mouseEvent.getX(), mouseEvent.getY());
+                                Ellipse ellipse = new Ellipse(strokeColorPicker.getValue(), ellipseStart, lastPoint, fillColorPicker.getValue());
+                                ellipse.draw(canvas.getGraphicsContext2D());
+                            }
+                        };
+                        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, ellipseButtonPressedHandler);
+                        canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, ellipseButtonReleasedHandler);
 
                         System.out.println("Ellipse selected");
                     }
                 });
+
                 rectangleButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent actionEvent) {
@@ -210,17 +226,17 @@ public class AppController {
                     canvas.removeEventHandler(MouseEvent.MOUSE_RELEASED, rectangleButtonReleasedHandler);
                     rectangleButtonReleasedHandler = null;
                 }
+
+                if (ellipseButtonPressedHandler != null) {
+                    canvas.removeEventHandler(MouseEvent.MOUSE_PRESSED, ellipseButtonPressedHandler);
+                    ellipseButtonPressedHandler = null;
+                }
+                if (ellipseButtonReleasedHandler != null) {
+                    canvas.removeEventHandler(MouseEvent.MOUSE_RELEASED, ellipseButtonReleasedHandler);
+                    ellipseButtonReleasedHandler = null;
+                }
+
             }
 
-
-
-/*
-    public void changeColor(ActionEvent event) {
-
-        Color color = fillColorPicker.getValue();
-    }
-*/
-
-
-        }
+}
 

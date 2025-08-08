@@ -13,6 +13,18 @@ public class Ellipse extends FilledShape {
 
     @Override
     public void draw(GraphicsContext gc) {
+        gc.setFill(fillColor);
+        gc.fillOval(Math.min(topLeft.getX(), rightBottom.getX()),  // copy from rectangle code but with stroke and fill for Oval
+                Math.min(topLeft.getY(), rightBottom.getY()),
+                Math.abs(topLeft.getX() - rightBottom.getX()),
+                Math.abs(topLeft.getY() - rightBottom.getY()));
+
+        gc.setStroke(strokeColor);
+        gc.strokeOval(Math.min(topLeft.getX(), rightBottom.getX()),
+                Math.min(topLeft.getY(), rightBottom.getY()),
+                Math.abs(topLeft.getX() - rightBottom.getX()),
+                Math.abs(topLeft.getY() - rightBottom.getY()));
+
 
     }
 }
