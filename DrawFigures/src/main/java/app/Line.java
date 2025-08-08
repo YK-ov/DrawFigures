@@ -17,5 +17,13 @@ public class Line extends Shape{
         gc.strokeLine(topLeft.getX(), topLeft.getY(), rightBottom.getX(), rightBottom.getY());
     }
 
+    @Override
+    public String toString() {
+        return "Line{" +
+                "strokeColor=" + strokeColor +
+                ", topLeft=" + topLeft +
+                ", rightBottom=" + rightBottom +
+                '}';
+    }
 }
 

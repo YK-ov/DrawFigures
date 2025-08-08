@@ -28,4 +28,13 @@ public class Rectangle extends FilledShape {
 
     }
 
+    @Override
+    public String toString() {
+        return "Rectangle{" +
+                "fillColor=" + fillColor +
+                ", strokeColor=" + strokeColor +
+                ", topLeft=" + topLeft +
+                ", rightBottom=" + rightBottom +
+                '}';
+    }
 }

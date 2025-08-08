@@ -27,4 +27,14 @@ public class Ellipse extends FilledShape {
 
 
     }
+
+    @Override
+    public String toString() {
+        return "Ellipse{" +
+                "fillColor=" + fillColor +
+                ", strokeColor=" + strokeColor +
+                ", topLeft=" + topLeft +
+                ", rightBottom=" + rightBottom +
+                '}';
+    }
 }

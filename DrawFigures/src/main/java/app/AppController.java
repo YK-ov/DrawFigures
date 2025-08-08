@@ -9,18 +9,22 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.stage.FileChooser;
 
 
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AppController {
 @FXML  // copy from view.fxml in the controller where the "fx:id" references are
@@ -57,6 +61,7 @@ public class AppController {
     private Point2D rectangleStart;
     private Point2D lineStart;
     private Point2D ellipseStart;
+    private File selectedFile;
 
     private List<Shape> figures = new ArrayList<>();
 
@@ -156,6 +161,7 @@ public class AppController {
                     @Override
                     public void handle(ActionEvent actionEvent) {
                         clearHandlers();
+
                         ellipseButtonPressedHandler = new EventHandler<MouseEvent>() {
 
                             @Override
@@ -209,7 +215,6 @@ public class AppController {
                     }
                 });
 
-
             }
 
             public void clearHandlers() {
@@ -245,6 +250,18 @@ public class AppController {
                 }
 
             }
+
+        public String escapeSpecialCharacters(String text) {
+        if (text == null) {
+            throw new IllegalArgumentException("text cannot be null");
+        }
+        String escapedText = text.replaceAll("\\R", " ");
+        if (escapedText.contains(",") || escapedText.contains("\"") || escapedText.contains("'")) {
+            escapedText = escapedText.replace("\"", "\"\"");
+            escapedText = "\"" + escapedText + "\"";
+        }
+        return escapedText;
+    }
 
             public void handleMenuButtons() {
                 newButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -342,10 +359,92 @@ public class AppController {
                         }
 
                     }
-                    });
+                });
+
+                openButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        FileChooser fileChooser = new FileChooser();
+                        fileChooser.setTitle("Open a CSV file");
+                        FileChooser.ExtensionFilter csvFilter = new FileChooser.ExtensionFilter("CSV files", "*.csv");
+                        fileChooser.getExtensionFilters().add(csvFilter);
+
+                        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+                        //fileChooser.setInitialDirectory(new File("/C:/Users/User/Desktop"));  // first / before C and : after C along with Users and User are absolutely necessary
+                        selectedFile = fileChooser.showOpenDialog(canvas.getScene().getWindow());
+
+                        if (selectedFile != null) {
+                            System.out.println(selectedFile.getPath() + " path");
+
+                        }
+
+
+                    }
+
+                });
+
+
+                saveButton.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        if (selectedFile == null) {
+                            FileChooser fileChooser = new FileChooser();
+                            fileChooser.setTitle("Open a CSV file");
+                            FileChooser.ExtensionFilter csvFilter = new FileChooser.ExtensionFilter("CSV files", "*.csv");
+                            fileChooser.getExtensionFilters().add(csvFilter);
+
+                            fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+                            //fileChooser.setInitialDirectory(new File("/C:/Users/User/Desktop"));  // first / before C and : after C along with Users and User are absolutely necessary
+                            selectedFile = fileChooser.showOpenDialog(canvas.getScene().getWindow());
+                        } else {
+                            System.out.println("got the file");
+                            String[] forCsv = new String[figures.size()];
+                            for (int i = 0; i < figures.size(); i++) {
+                                forCsv[i] = figures.get(i).toString();
+                            }
+                            for (int i = 0; i < forCsv.length; i++) {
+                                System.out.println(forCsv[i] + " from array");
+                            }
+
+                            String csv = Stream.of(forCsv).map(this::escapeSpecialCharacters).collect(Collectors.joining());
+
+                            System.out.println(csv + " written to file");
+
+
+                            try (PrintWriter writer = new PrintWriter(selectedFile)) {
+                                writer.write(csv);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            //String collect = figures.stream().collect(Collectors.joining(","));
+
+
+                            //for (int i = 0; i < figures.size(); i++) {
+                            //    System.out.println(figures.get(i));
+                            //}
+                        }
+
+                    }
+
+                    private String escapeSpecialCharacters(String text) {
+                        if (text == null) {
+                            throw new IllegalArgumentException("text cannot be null");
+                        }
+                        String escapedText = text.replaceAll("\\R", " ");
+                        if (escapedText.contains(",") || escapedText.contains("\"") || escapedText.contains("'")) {
+                            escapedText = escapedText.replace("\"", "\"\"");
+                            escapedText = "\"" + escapedText + "\"";
+                        }
+                        return escapedText;
+                    }
+                });
 
             }
+
+
 }
+
+
 
 
 
